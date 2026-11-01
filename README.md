@@ -1,6 +1,6 @@
 # my-agent-skills
 
-Personal skills for AI coding agents. Version 1 supports Claude Code only.
+Personal skills for AI coding agents. It supports Claude Code, Cursor and the Codex app.
 
 This is my personal setup. You can use it, but I do not give support.
 
@@ -8,11 +8,11 @@ This is my personal setup. You can use it, but I do not give support.
 
 | Skill | What it does | Start |
 | --- | --- | --- |
-| `create-plan` | Writes a phased implementation plan with success criteria. Writes no code. | `/create-plan <task>` only |
+| `create-plan` | Writes a phased implementation plan with success criteria. Writes no code. | `/create-plan <task>` (Claude Code, Cursor) or `$create-plan <task>` (Codex), only on request |
 
 ## Install
 
-Requirements: Claude Code and git on macOS or Linux.
+Requirements: git and at least one of Claude Code, Cursor or the Codex app, on macOS or Linux.
 
 ```bash
 # Get the repository
@@ -21,13 +21,19 @@ git clone https://github.com/nschuette/my-agent-skills.git
 # Go to the repository folder
 cd my-agent-skills
 
-# Link the skills into ~/.claude/skills/
+# Link the skills into ~/.claude/skills/ and ~/.agents/skills/
 ./install.sh
 ```
 
-`install.sh` links each folder in `skills/` into `~/.claude/skills/`.
+`install.sh` links each folder in `skills/` into `~/.claude/skills/` and `~/.agents/skills/`.
 Changes in the repository apply immediately.
-To use a different target folder, set `CLAUDE_SKILLS_DIR`.
+To use different target folders, set `CLAUDE_SKILLS_DIR` and `AGENTS_SKILLS_DIR`.
+
+Each agent reads these folders:
+
+- Claude Code: `~/.claude/skills/`.
+- Cursor: `~/.claude/skills/` and `~/.agents/skills/`.
+- Codex app: `~/.agents/skills/`.
 
 Then add the [recommended settings](#recommended-settings).
 
@@ -36,7 +42,7 @@ Then add the [recommended settings](#recommended-settings).
 Example: a plan for a Jira ticket.
 
 1. Create a branch for the task: `git switch -c feature/PROJ-123-csv-export`.
-2. Run `/create-plan PROJ-123`.
+2. Run `/create-plan PROJ-123`. In Codex, run `$create-plan PROJ-123`.
    If a ticket tool such as a Jira MCP server is connected, the agent reads the ticket.
    If not, the agent asks you to paste the ticket text.
 3. Answer the questions of the agent and choose an approach.
@@ -66,6 +72,8 @@ The files stay out of git. All worktrees of a project use the same files.
 
 ## Recommended settings
 
+### Claude Code
+
 Add this to `~/.claude/settings.json`. Replace `<you>` with your user name.
 
 ```json
@@ -82,9 +90,28 @@ Add this to `~/.claude/settings.json`. Replace `<you>` with your user name.
 - `allow`: the agent can write work files without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
 - `ask`: optional. The agent asks before each commit.
 
+### Codex
+
+Add this to `~/.codex/config.toml`. Replace `<you>` with your user name.
+
+```toml
+[sandbox_workspace_write]
+writable_roots = ["/Users/<you>/agents/work"]
+```
+
+The sandbox blocks writes outside of the workspace.
+The entry applies in the sandbox mode `workspace-write`.
+Without the entry, Codex asks for approval for each write.
+
+### Cursor
+
+Not checked yet. Cursor can ask before each write to `~/agents/work`.
+No setting that prevents this is confirmed.
+
 ## Known limitations
 
-- Claude Code only. `disable-model-invocation` and `argument-hint` are Claude Code fields.
+- Only Claude Code replaces `$ARGUMENTS`. The other agents take the task from the message.
+- Cloud agents are not supported. The skills and `~/agents/work` are only on the local computer.
 - Templates are in `SKILL.md`, not in `assets/`. Reason: Claude Code asks for permission before it reads files in a symlinked skill folder. See [anthropics/claude-code#106433](https://github.com/anthropics/claude-code/issues/106433).
 
 ## Conventions
