@@ -48,9 +48,10 @@ Do not apply the strict STE dictionary. Technical names, commands and paths are 
 Skills write work files (plans, research documents) outside of the project repository:
 
 ```
-~/agents/work/<project>/<branch>/YYYY-MM-DD-<slug>.<type>.md
+<work root>/<project>/<branch>/YYYY-MM-DD-<slug>.<type>.md
 ```
 
+- `<work root>`: `$AGENTS_WORK_DIR`. If the variable is not set, `~/agents/work`.
 - `<project>`: folder name of the main repository. This is also true in a worktree.
 - `<branch>`: current branch. Replace each `/` with `-`.
 - `<type>`: `plan` or `research`.

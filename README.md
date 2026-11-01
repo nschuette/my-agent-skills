@@ -46,7 +46,7 @@ Example: a plan for a Jira ticket.
    If a ticket tool such as a Jira MCP server is connected, the agent reads the ticket.
    If not, the agent asks you to paste the ticket text.
 3. Answer the questions of the agent and choose an approach.
-4. Approve the outline. The agent writes the plan to `~/agents/work/<project>/<branch>/`.
+4. Approve the outline. The agent writes the plan to the plan folder. See [Work files](#work-files).
 5. Review the plan. Give feedback in the same session. The agent changes the plan file.
 6. Start a new session and say: `Implement <path of the plan>`.
    The agent implements one phase at a time. After each phase, it stops for your approval.
@@ -65,12 +65,23 @@ You can also describe the task in the conversation first. Then run `/create-plan
 Skills write plans and research documents outside of the project repository:
 
 ```
-~/agents/work/<project>/<branch>/YYYY-MM-DD-<slug>.<type>.md
+<work root>/<project>/<branch>/YYYY-MM-DD-<slug>.<type>.md
 ```
 
 The files stay out of git. All worktrees of a project use the same files.
 
+The work root is `$AGENTS_WORK_DIR`. If the variable is not set, the work root is `~/agents/work`.
+The value must be an absolute path, because the agents do not expand `~` in settings files.
+
+To use a different work root, set the variable in each agent:
+
+- Claude Code: add `"env": { "AGENTS_WORK_DIR": "/Users/<you>/my/work" }` to `~/.claude/settings.json`.
+- Codex: add `set = { AGENTS_WORK_DIR = "/Users/<you>/my/work" }` to the section `[shell_environment_policy]` of `~/.codex/config.toml`.
+- Cursor: add `export AGENTS_WORK_DIR="/Users/<you>/my/work"` to `~/.zshrc`. Not checked yet.
+
 ## Recommended settings
+
+If you set `AGENTS_WORK_DIR`, replace each `agents/work` path in these settings with your work root.
 
 ### Claude Code
 
@@ -88,6 +99,7 @@ Add this to `~/.claude/settings.json`. Replace `<you>` with your user name.
 
 - `additionalDirectories`: the agent can read work files in each session.
 - `allow`: the agent can write work files without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
+  For an absolute path, start the rule with `//`, for example `Edit(//Users/<you>/my/work/**)`. Reason: Claude Code reads one `/` as relative to the settings file.
 - `ask`: optional. The agent asks before each commit.
 
 ### Codex
@@ -111,7 +123,8 @@ No setting that prevents this is confirmed.
 ## Known limitations
 
 - Only Claude Code replaces `$ARGUMENTS`. The other agents take the task from the message.
-- Cloud agents are not supported. The skills and `~/agents/work` are only on the local computer.
+- Cloud agents are not supported. The skills and the work root are only on the local computer.
+- In Claude Code, the skill can write without a prompt only to `~/agents/work`. Reason: `allowed-tools` cannot read environment variables. For a different work root, add an `allow` rule in the settings.
 - Templates are in `SKILL.md`, not in `assets/`. Reason: Claude Code asks for permission before it reads files in a symlinked skill folder. See [anthropics/claude-code#106433](https://github.com/anthropics/claude-code/issues/106433).
 
 ## Conventions

@@ -1,12 +1,13 @@
 ---
 name: create-plan
-description: Writes a phased implementation plan with success criteria to ~/agents/work/<project>/<branch>/. Writes no code. Use only when the user runs /create-plan.
+description: Writes a phased implementation plan with success criteria to <AGENTS_WORK_DIR or ~/agents/work>/<project>/<branch>/. Writes no code. Use only when the user runs /create-plan.
 disable-model-invocation: true
 argument-hint: "[task, ticket or file]"
 allowed-tools:
   - Bash(git branch --show-current)
   - Bash(git rev-parse *)
   - Bash(git symbolic-ref *)
+  - Bash(echo *)
   - Edit(~/agents/work/**)
 ---
 
@@ -28,7 +29,9 @@ Do not change project code. Do not commit.
    1. Run `git rev-parse --path-format=absolute --git-common-dir`. The output is the `.git` folder of the main repository.
    2. The project name is the name of the folder that contains this `.git` folder.
 5. Replace each `/` in the branch name with `-`.
-6. The plan folder is `~/agents/work/<project>/<branch>/`.
+6. Get the work root with `echo "${AGENTS_WORK_DIR:-$HOME/agents/work}"`.
+7. If the work root does not start with `/`, stop. Tell the user to set `AGENTS_WORK_DIR` to an absolute path. Reason: a settings file does not expand `~`.
+8. The plan folder is `<work root>/<project>/<branch>/`.
 
 ## Step 2: Collect context
 
