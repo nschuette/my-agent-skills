@@ -29,6 +29,15 @@ cd my-agent-skills
 Changes in the repository apply immediately.
 To use different target folders, set `CLAUDE_SKILLS_DIR` and `AGENTS_SKILLS_DIR`.
 
+To use a different [work root](#work-files), set `AGENTS_WORK_DIR`:
+
+```bash
+AGENTS_WORK_DIR="$HOME/my/work" ./install.sh
+```
+
+Then the script prints the settings for each agent with this path. Copy them into the files that the script names.
+The Cursor setting is not checked yet.
+
 Each agent reads these folders:
 
 - Claude Code: `~/.claude/skills/`.
@@ -73,11 +82,7 @@ The files stay out of git. All worktrees of a project use the same files.
 The work root is `$AGENTS_WORK_DIR`. If the variable is not set, the work root is `~/agents/work`.
 The value must be an absolute path, because the agents do not expand `~` in settings files.
 
-To use a different work root, set the variable in each agent:
-
-- Claude Code: add `"env": { "AGENTS_WORK_DIR": "/Users/<you>/my/work" }` to `~/.claude/settings.json`.
-- Codex: add `set = { AGENTS_WORK_DIR = "/Users/<you>/my/work" }` to the section `[shell_environment_policy]` of `~/.codex/config.toml`.
-- Cursor: add `export AGENTS_WORK_DIR="/Users/<you>/my/work"` to `~/.zshrc`. Not checked yet.
+To use a different work root, the variable must reach each agent. `install.sh` prints the settings for this. See [Install](#install).
 
 ## Recommended settings
 
