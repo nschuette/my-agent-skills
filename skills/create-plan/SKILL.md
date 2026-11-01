@@ -12,10 +12,11 @@ allowed-tools:
 
 # Create a plan
 
-Write an implementation plan for this task: $ARGUMENTS
+Task: $ARGUMENTS
 
-The task can also come from the conversation before this command. Use both sources.
-If there is no task in either source, ask for it and stop.
+If the line before is empty or shows a placeholder, the task is in the message that started this skill.
+The task can also come from the conversation before this command. Use all sources.
+If there is no task in any source, ask for it and stop.
 Do not change project code. Do not commit.
 
 ## Step 1: Find the plan folder
