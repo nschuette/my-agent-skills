@@ -94,17 +94,19 @@ Rules for phases:
 
 Read the plan again and check these points. Fix each problem in the plan.
 
-1. Coverage: each requirement of the task and each acceptance criterion of the ticket has a phase.
+1. Coverage: each requirement of the task and each acceptance criterion of the ticket has a row in the table "Behavior" and a phase.
    The phase covers the full scope of the requirement. Compare the scope with the words of the task.
-2. Exceptions: each exception in the plan has a source in the task or in a statement of the user.
+2. Exceptions: each exception in the plan is in the section "Decisions" with a source in the task or in a statement of the user.
    "The existing code does it" is not a source.
    If an exception has no source, ask the user. If the user does not confirm it, remove it.
 3. Bypasses: if the plan adds a restriction, the restriction applies on each path to the same data.
    Examples of paths: request parameters, other endpoints, jobs, caches and aggregates.
-4. Decisions: each line decides something. Replace vague lines such as "handle edge cases" or "add validation" with the exact behavior.
+4. Precision: each line decides something. Replace vague lines such as "handle edge cases" or "add validation" with the exact behavior.
 5. Names: each file, function and signature has the same name in all phases.
 6. Checks: each phase has automated success criteria with exact commands.
 7. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
+   The part before the first phase has 40 lines or fewer. Reason: the user reads this part to approve the plan.
+   Each phase has 7 changes or fewer. If a phase has more, merge related changes or split the phase.
 
 ## Step 8: Hand over
 
@@ -118,10 +120,16 @@ When the user gives feedback, change the plan file. Then show only what changed.
 ## Guidelines
 
 - If the user corrects a fact, check the correction in the code before you use it.
-- Write the plan in English and in full sentences. Do this also when a terse output style is active. Reason: a new session must understand the plan without this chat.
+- Write the plan in simple technical English. Do this also when a terse output style is active. Reason: the user and a new session must understand the plan without this chat.
+  - Write sentences of 20 words or fewer, in the active voice.
+  - Use one word for one thing in the full plan.
+  - Start each change with a verb: "Add", "Change", "Remove" or "Move".
+  - Write one line for each change. Give a reason only if it is not obvious.
 - Talk to the user in the language of the user.
 - Keep the plan short. Do not describe what the reader can see in the code.
 - Show code only where the exact form is important: signatures, config keys, SQL.
+- Show a signature as code. Do not describe it in words.
+- If a flow changes across more than two components, add a Mermaid diagram of the new flow to "Approach".
 - Do not define a commit format. The project instructions define it.
 
 ## Plan template
@@ -138,29 +146,34 @@ Ticket: <ticket key or link, or "none">
 
 1 to 3 sentences: what is different when the work is done.
 
-## Out of scope
+## Behavior
 
-What this plan does not change.
-
-## Current state
-
-Only the facts that the implementation needs. Give each fact a `path:line` reference.
+| Requirement | Now | After | Phase |
+|---|---|---|---|
+| <words of the task> | <behavior now> | <behavior after> | 1 |
 
 ## Approach
 
 The chosen approach and the reason in 1 to 3 sentences.
-Rejected options: one sentence for each option, with the reason.
+Rejected options: one line for each option, with the reason.
 
-## Exceptions
+## Decisions
 
-Each exception to a requirement, with its source: a quote from the task or a statement of the user.
-If there are no exceptions, write "None".
+- <Decision about behavior that the task does not state>. Reason: <reason>.
+- <Exception to a requirement>. Source: <quote from the task or statement of the user>.
+
+If there are no decisions and no exceptions, write "None".
+
+## Out of scope
+
+- <What this plan does not change>
 
 ## Phase 1: <Name>
 
 ### Changes
 
-- `path/to/file`: what changes and why.
+- Add `<signature>` to `path/to/file`.
+- Change `path/to/file`: <what changes>.
 
 ### Success criteria
 
@@ -175,6 +188,10 @@ Manual:
 ## Phase 2: <Name>
 
 ...
+
+## Current state
+
+Only the facts that the implementation needs. One line for each fact, with a `path:line` reference.
 
 ## Execution rules
 
