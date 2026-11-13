@@ -39,22 +39,26 @@ Do not change project code. Do not commit.
 2. If the plan folder contains `*.research.md` files, read them fully. Use them as the main source for the current state. Check only the facts that the plan depends on.
 3. If the plan folder already contains a plan for this task, ask the user: update it or write a new one.
 4. Read all files and links that the user gave. Read them fully.
-5. Find the commands for tests, lint and build. Look in `CLAUDE.md`, `AGENTS.md`, `README`, `Makefile`, `package.json` and `composer.json`. If you cannot find them, ask. Do not guess.
-6. Explore the code that the task touches. Find existing patterns that the change can follow.
+5. List the requirements of the task before you explore the code. Keep the words that set the scope, for example "always" or "for all users". Reason: the existing code must not change what the task requires.
+6. Find the commands for tests, lint and build. Look in `CLAUDE.md`, `AGENTS.md`, `README`, `Makefile`, `package.json` and `composer.json`. If you cannot find them, ask. Do not guess.
+7. Explore the code that the task touches. Find existing patterns that the change can follow. A pattern shows how to build the change. The task decides what the change does.
 
 ## Step 3: Clarify
 
 1. Ask only what the code cannot tell you: decisions, constraints and scope.
 2. Do not ask about facts that you found. State them instead.
-3. Ask all questions in one message. If the task is clear, do not ask.
-4. If the task contains independent parts, propose one plan for each part.
+3. If a pattern contains an exception that the task does not state, ask if the exception applies to this task.
+   An exception is a condition that makes a requirement not apply, for example a flag, a parameter, a role or a fallback.
+   Reason: the existing code can have a different scope than this task.
+4. Ask all questions in one message. If the task is clear, do not ask.
+5. If the task contains independent parts, propose one plan for each part.
 
 ## Step 4: Choose the approach
 
 If there is more than one sensible approach, show 2 or 3 options:
 
 - For each option: the approach, the advantages and the risks.
-- Prefer options that follow the existing patterns.
+- If two options meet all requirements, prefer the option that follows the existing patterns.
 - Recommend one option and give the reason.
 
 Then stop and wait for the decision.
@@ -68,6 +72,7 @@ Show the user:
 - The goal in one sentence.
 - The phases, with one line for each phase.
 - What is out of scope.
+- Each exception to a requirement, with its source.
 
 Then stop and wait for approval.
 
@@ -90,10 +95,16 @@ Rules for phases:
 Read the plan again and check these points. Fix each problem in the plan.
 
 1. Coverage: each requirement of the task and each acceptance criterion of the ticket has a phase.
-2. Decisions: each line decides something. Replace vague lines such as "handle edge cases" or "add validation" with the exact behavior.
-3. Names: each file, function and signature has the same name in all phases.
-4. Checks: each phase has automated success criteria with exact commands.
-5. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
+   The phase covers the full scope of the requirement. Compare the scope with the words of the task.
+2. Exceptions: each exception in the plan has a source in the task or in a statement of the user.
+   "The existing code does it" is not a source.
+   If an exception has no source, ask the user. If the user does not confirm it, remove it.
+3. Bypasses: if the plan adds a restriction, the restriction applies on each path to the same data.
+   Examples of paths: request parameters, other endpoints, jobs, caches and aggregates.
+4. Decisions: each line decides something. Replace vague lines such as "handle edge cases" or "add validation" with the exact behavior.
+5. Names: each file, function and signature has the same name in all phases.
+6. Checks: each phase has automated success criteria with exact commands.
+7. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
 
 ## Step 8: Hand over
 
@@ -139,6 +150,11 @@ Only the facts that the implementation needs. Give each fact a `path:line` refer
 
 The chosen approach and the reason in 1 to 3 sentences.
 Rejected options: one sentence for each option, with the reason.
+
+## Exceptions
+
+Each exception to a requirement, with its source: a quote from the task or a statement of the user.
+If there are no exceptions, write "None".
 
 ## Phase 1: <Name>
 
