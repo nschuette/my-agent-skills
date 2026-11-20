@@ -8,7 +8,8 @@ This is my personal setup. You can use it, but I do not give support.
 
 | Skill | What it does | Start |
 | --- | --- | --- |
-| `create-plan` | Writes a phased implementation plan with success criteria. Writes no code. | `/create-plan <task>` (Claude Code, Cursor) or `$create-plan <task>` (Codex), only on request |
+| `create-plan` | Checks the task against the code and writes a phased implementation plan. Writes no code. | `/create-plan <task>` (Claude Code, Cursor) or `$create-plan <task>` (Codex), only on request |
+| `implement` | Implements a plan phase by phase, with tests first, checks, a review and one commit for each phase. | `/implement <plan>` (Claude Code, Cursor) or `$implement <plan>` (Codex), only on request |
 
 ## Install
 
@@ -47,10 +48,13 @@ Example: a plan for a Jira ticket.
    If a ticket tool such as a Jira MCP server is connected, the agent reads the ticket.
    If not, the agent asks you to paste the ticket text.
 3. Answer the questions of the agent and choose an approach.
-4. Approve the outline. The agent writes the plan to `.agent-work/plans/<branch>/`. See [Work files](#work-files).
+   If the ticket has gaps, the agent lists questions for the ticket author. On request, it writes a ticket comment.
+4. Approve the outline. Check the level of each phase. See [Autonomy levels](#autonomy-levels).
+   The agent writes the plan to `.agent-work/plans/<branch>/`. See [Work files](#work-files).
 5. Review the plan. Give feedback in the same session. The agent changes the plan file.
-6. Start a new session and say: `Implement <path of the plan>`.
-   The agent implements one phase at a time. After each phase, it stops for your approval.
+6. Start a new session and run `/implement <path of the plan>`.
+   The agent implements one phase at a time and writes a report for each phase.
+   The level of the phase decides if the agent stops for your approval.
 
 The task can also be a text or a file:
 
@@ -60,6 +64,24 @@ The task can also be a text or a file:
 ```
 
 You can also describe the task in the conversation first. Then run `/create-plan` without a task.
+
+## Autonomy levels
+
+`create-plan` gives each phase a level. `implement` reads the level.
+
+| Level | What `implement` does |
+| --- | --- |
+| 0 | Stops after the phase. Commits after your approval. |
+| 1 | Like level 0, but first runs the checks and a review against the plan. This is the default. |
+| 2 | Commits the phase and continues. Stops before a phase with level 0 or 1. |
+| 3 | Implements and commits all phases. You review at the end. |
+
+Migrations, authentication, public APIs and payments always get level 0.
+`implement` can lower a level, for example when a check fails. Only you can raise a level.
+To set a maximum for a project, write it into the `CLAUDE.md` or `AGENTS.md` of the project, for example "Maximum autonomy level: 1".
+To change the levels for one run, say it at the start, for example `/implement <plan>, all phases level 0`.
+
+`implement` commits only on a feature branch. It never pushes, amends, rebases or resets.
 
 ## Work files
 
@@ -85,13 +107,13 @@ Add this to `~/.claude/settings.json`:
 {
   "permissions": {
     "allow": ["Read(~/.claude/skills/**)"],
-    "ask": ["Bash(git commit *)"]
+    "ask": ["Bash(git push *)"]
   }
 }
 ```
 
 - `allow`: the agent can read the files of a skill without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
-- `ask`: optional. The agent asks before each commit.
+- `ask`: the agent asks before each push. Reason: `implement` commits by itself from level 2. The push is the step that makes the work visible to others.
 
 ## Known limitations
 
