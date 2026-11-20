@@ -10,9 +10,7 @@ Personal skills for AI coding agents. It supports Claude Code, Cursor and the Co
   - `references/`: documentation that the agent reads only when necessary.
   - `scripts/`: code that the agent runs.
   - `agents/openai.yaml`: Codex settings, for example the invocation policy.
-
-  Claude Code asks for permission before it reads files in these folders, because they are outside of the project folder. Use them only when necessary.
-- `install.sh`: links each skill folder into `~/.claude/skills/` and `~/.agents/skills/`.
+- `install.sh`: copies each skill folder into `~/.claude/skills/` and `~/.agents/skills/`. Run it again after each change.
 - `README.md`: install steps and the list of skills. Update the list when you add or remove a skill.
 
 ## Writing rules
@@ -39,7 +37,7 @@ Do not apply the strict STE dictionary. Technical names, commands and paths are 
 - In `SKILL.md`, refer to other files with a path relative to the skill folder, for example `references/api.md`.
 - If a skill starts a workflow or writes files, set `disable-model-invocation: true` and add `agents/openai.yaml` with `allow_implicit_invocation: false`. Then the skill runs only when the user starts it.
 - Write `$ARGUMENTS` only once, and only in a line that also makes sense without substitution. Reason: only Claude Code replaces it.
-- A skill must work without this repository. It cannot rely on this `CLAUDE.md`, because `install.sh` links only the skill folder.
+- A skill must work without this repository. It cannot rely on this `CLAUDE.md`, because `install.sh` copies only the skill folder.
 - Do not put project-specific details in a skill: test commands, commit format, ticket keys. These come from the project's `CLAUDE.md` or `AGENTS.md`.
 - Do not put company-internal details in this repository. The repository can become public.
 

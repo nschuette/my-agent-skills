@@ -21,12 +21,13 @@ git clone https://github.com/nschuette/skills.git
 # Go to the repository folder
 cd skills
 
-# Link the skills into ~/.claude/skills/ and ~/.agents/skills/
+# Copy the skills into ~/.claude/skills/ and ~/.agents/skills/
 ./install.sh
 ```
 
-`install.sh` links each folder in `skills/` into `~/.claude/skills/` and `~/.agents/skills/`.
-Changes in the repository apply immediately.
+`install.sh` copies each folder in `skills/` into `~/.claude/skills/` and `~/.agents/skills/`.
+After a change in the repository, run `./install.sh` again.
+The script replaces only folders that it installed, and symlinks from older versions of the script.
 To use different target folders, set `CLAUDE_SKILLS_DIR` and `AGENTS_SKILLS_DIR`.
 
 To use a different [work root](#work-files), set `AGENTS_WORK_DIR`:
@@ -96,14 +97,14 @@ Add this to `~/.claude/settings.json`. Replace `<you>` with your user name.
 {
   "permissions": {
     "additionalDirectories": ["/Users/<you>/agents/work"],
-    "allow": ["Edit(~/agents/work/**)"],
+    "allow": ["Read(~/.claude/skills/**)", "Edit(~/agents/work/**)"],
     "ask": ["Bash(git commit *)"]
   }
 }
 ```
 
 - `additionalDirectories`: the agent can read work files in each session.
-- `allow`: the agent can write work files without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
+- `allow`: the agent can read the files of a skill and write work files without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
   For an absolute path, start the rule with `//`, for example `Edit(//Users/<you>/my/work/**)`. Reason: Claude Code reads one `/` as relative to the settings file.
 - `ask`: optional. The agent asks before each commit.
 
@@ -130,7 +131,7 @@ No setting that prevents this is confirmed.
 - Only Claude Code replaces `$ARGUMENTS`. The other agents take the task from the message.
 - Cloud agents are not supported. The skills and the work root are only on the local computer.
 - In Claude Code, the skill can write without a prompt only to `~/agents/work`. Reason: `allowed-tools` cannot read environment variables. For a different work root, add an `allow` rule in the settings.
-- Templates are in `SKILL.md`, not in `assets/`. Reason: Claude Code asks for permission before it reads files in a symlinked skill folder. See [anthropics/claude-code#106433](https://github.com/anthropics/claude-code/issues/106433).
+- `install.sh` copies the skills and does not link them. Reason: Claude Code checks a `Read` rule against the real path of a file. A rule for `~/.claude/skills/` does not match a file in a symlinked folder. See [anthropics/claude-code#106433](https://github.com/anthropics/claude-code/issues/106433).
 
 ## Conventions
 
