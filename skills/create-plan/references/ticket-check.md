@@ -35,23 +35,9 @@ Report only findings that change the plan. Do not list generic risks. Reason: a 
 
 ## Ticket comment
 
-If the user asks for a ticket comment, write it with the template below.
+If the user asks for a ticket comment, write it with `assets/ticket-comment.md`.
 
 - Write the comment in the language of the ticket.
 - Write for a reader who does not know the code. Do not use paths, class names or code.
 - If the user does not tell you to post the comment, do not post it.
   Reason: a ticket comment is a message on behalf of the user.
-
-## Template
-
-````markdown
-Hi <name>, before I start with <ticket key> I have <number> questions:
-
-1. <Question>
-   Context: <what the system does now, in product words>
-   Proposal: <proposed answer>
-
-2. ...
-
-If the proposals are fine, a short "OK" is enough.
-````

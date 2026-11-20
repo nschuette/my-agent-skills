@@ -28,7 +28,9 @@ Do not apply the strict STE dictionary. Technical names, commands and paths are 
 7. Use numbered lists for steps in a sequence. Use bullet lists for items without a sequence.
 8. Do not use capital letters or other emphasis to make a rule stronger. Give the reason instead.
 9. Write only what the agent cannot find in the code or in its default behavior.
-10. Keep each `SKILL.md` short. Put a template in a section "Template" at the end of `SKILL.md`. Put it in a code block with four backticks. Reason: then the headings of the template are clearly separate from the headings of the skill.
+10. Keep each `SKILL.md` short, with 200 lines or fewer. Put only the steps into `SKILL.md`.
+    Put details into `references/` and templates into `assets/`. Refer to each file in the step that needs it.
+    Reason: the agent reads a file only when it reaches the step.
 
 ## Skill conventions
 

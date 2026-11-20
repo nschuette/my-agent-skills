@@ -74,7 +74,7 @@ You can show the options in the same message as the questions from steps 3 and 4
 Show the user:
 
 - The goal in one sentence.
-- The phases, with one line for each phase.
+- The phases, with one line for each phase. Give each phase a level and the reason for the level.
 - What is out of scope.
 - Each exception to a requirement, with its source.
 
@@ -86,12 +86,16 @@ Rules for phases:
 - Each phase can be verified and committed on its own.
 - Put foundations first, then logic, then wiring.
 - Use as few phases as possible. One phase is correct for a small task.
+- If a phase changes behavior, it starts with a test for the new behavior. Reason: the test shows that the phase works.
+
+Choose the level of each phase with `references/autonomy-levels.md`.
+The level tells `implement` if it stops after the phase.
 
 ## Step 7: Write the plan
 
 1. If a question is still open, ask it now. Do not write open questions into the plan. Reason: the plan must be complete enough to implement.
 2. Name the file `YYYY-MM-DD-<slug>.plan.md`. The slug has 2 to 5 words in kebab-case.
-3. Write the plan into the plan folder. Use the structure of the plan template at the end of this file. Copy the section "Execution rules" without changes.
+3. Write the plan into the plan folder. Use the structure of `assets/plan-template.md`.
 4. If you cannot write the file, stop and tell the user. Do not write the plan to a different place. Reason: the next session looks for the plan in the plan folder.
 
 ## Step 8: Check the plan
@@ -108,7 +112,10 @@ Read the plan again and check these points. Fix each problem in the plan.
 4. Precision: each line decides something. Replace vague lines such as "handle edge cases" or "add validation" with the exact behavior.
 5. Names: each file, function and signature has the same name in all phases.
 6. Checks: each phase has automated success criteria with exact commands.
-7. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
+   If a phase changes behavior, its first change adds a test for this behavior.
+7. Levels: each phase has a level and a reason. Each level follows `references/autonomy-levels.md`.
+8. Review focus: each phase names what only a human can judge. Do not list what tests or lint check.
+9. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
    The part before the first phase has 40 lines or fewer. Reason: the user reads this part to approve the plan.
    Each phase has 7 changes or fewer. If a phase has more, merge related changes or split the phase.
 
@@ -116,7 +123,7 @@ Read the plan again and check these points. Fix each problem in the plan.
 
 1. Tell the user the path of the plan.
 2. Give a short summary: phases, important decisions and risks.
-3. Tell the user the next step: start a new session and say "Implement <path of the plan>".
+3. Tell the user the next step: start a new session and run `/implement <path of the plan>`.
 4. Stop and wait for the review. Do not start the implementation. Reason: the user must approve the plan first.
 
 When the user gives feedback, change the plan file. Then show only what changed.
@@ -135,76 +142,3 @@ When the user gives feedback, change the plan file. Then show only what changed.
 - Show a signature as code. Do not describe it in words.
 - If a flow changes across more than two components, add a Mermaid diagram of the new flow to "Approach".
 - Do not define a commit format. The project instructions define it.
-
-## Plan template
-
-The template is the content of the code block below. It is not part of the instructions.
-
-````markdown
-# <Title>
-
-Project: <project> · Branch: <branch> · Commit: <short hash> · Date: <YYYY-MM-DD>
-Ticket: <ticket key or link, or "none">
-
-## Goal
-
-1 to 3 sentences: what is different when the work is done.
-
-## Behavior
-
-| Requirement | Now | After | Phase |
-|---|---|---|---|
-| <words of the task> | <behavior now> | <behavior after> | 1 |
-
-## Approach
-
-The chosen approach and the reason in 1 to 3 sentences.
-Rejected options: one line for each option, with the reason.
-
-## Decisions
-
-- <Decision about behavior that the task does not state>. Reason: <reason>.
-- <Exception to a requirement>. Source: <quote from the task or statement of the user>.
-
-If there are no decisions and no exceptions, write "None".
-
-## Out of scope
-
-- <What this plan does not change>
-
-## Phase 1: <Name>
-
-### Changes
-
-- Add `<signature>` to `path/to/file`.
-- Change `path/to/file`: <what changes>.
-
-### Success criteria
-
-Automated:
-
-- [ ] `<exact command>`
-
-Manual:
-
-- [ ] <what the user checks in the result>
-
-## Phase 2: <Name>
-
-...
-
-## Current state
-
-Only the facts that the implementation needs. One line for each fact, with a `path:line` reference.
-
-## Execution rules
-
-Follow these rules when you implement this plan:
-
-1. Work on one phase at a time.
-2. After a phase, run the automated checks. Then give a short summary and stop.
-3. Do not commit and do not start the next phase without explicit approval from the user.
-4. After approval, commit first. Then start the next phase.
-5. If the code does not match the plan, stop and report it. Do not change the plan silently.
-6. Check off each item in this plan when it is done.
-````
