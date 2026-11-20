@@ -7,6 +7,7 @@ allowed-tools:
   - Bash(git branch --show-current)
   - Bash(git rev-parse *)
   - Bash(git symbolic-ref *)
+  - Read(~/.claude/skills/create-plan/**)
 ---
 
 # Create a plan
@@ -40,7 +41,13 @@ Do not change project code. Do not commit.
 6. Find the commands for tests, lint and build. Look in `CLAUDE.md`, `AGENTS.md`, `README`, `Makefile`, `package.json` and `composer.json`. If you cannot find them, ask. Do not guess.
 7. Explore the code that the task touches. Find existing patterns that the change can follow. A pattern shows how to build the change. The task decides what the change does.
 
-## Step 3: Clarify
+## Step 3: Check the task
+
+The task is input, not truth. It can contain wrong assumptions, gaps and contradictions.
+Check the task against the code. Follow `references/ticket-check.md`.
+Ask the questions together with the questions of step 4, before the outline.
+
+## Step 4: Clarify
 
 1. Ask only what the code cannot tell you: decisions, constraints and scope.
 2. Do not ask about facts that you found. State them instead.
@@ -50,7 +57,7 @@ Do not change project code. Do not commit.
 4. Ask all questions in one message. If the task is clear, do not ask.
 5. If the task contains independent parts, propose one plan for each part.
 
-## Step 4: Choose the approach
+## Step 5: Choose the approach
 
 If there is more than one sensible approach, show 2 or 3 options:
 
@@ -60,9 +67,9 @@ If there is more than one sensible approach, show 2 or 3 options:
 
 Then stop and wait for the decision.
 If there is only one sensible approach, state it in one or two sentences. Do not stop.
-You can show the options in the same message as the questions from step 3.
+You can show the options in the same message as the questions from steps 3 and 4.
 
-## Step 5: Propose an outline
+## Step 6: Propose an outline
 
 Show the user:
 
@@ -80,14 +87,14 @@ Rules for phases:
 - Put foundations first, then logic, then wiring.
 - Use as few phases as possible. One phase is correct for a small task.
 
-## Step 6: Write the plan
+## Step 7: Write the plan
 
 1. If a question is still open, ask it now. Do not write open questions into the plan. Reason: the plan must be complete enough to implement.
 2. Name the file `YYYY-MM-DD-<slug>.plan.md`. The slug has 2 to 5 words in kebab-case.
 3. Write the plan into the plan folder. Use the structure of the plan template at the end of this file. Copy the section "Execution rules" without changes.
 4. If you cannot write the file, stop and tell the user. Do not write the plan to a different place. Reason: the next session looks for the plan in the plan folder.
 
-## Step 7: Check the plan
+## Step 8: Check the plan
 
 Read the plan again and check these points. Fix each problem in the plan.
 
@@ -105,7 +112,7 @@ Read the plan again and check these points. Fix each problem in the plan.
    The part before the first phase has 40 lines or fewer. Reason: the user reads this part to approve the plan.
    Each phase has 7 changes or fewer. If a phase has more, merge related changes or split the phase.
 
-## Step 8: Hand over
+## Step 9: Hand over
 
 1. Tell the user the path of the plan.
 2. Give a short summary: phases, important decisions and risks.
