@@ -1,4 +1,4 @@
-# my-agent-skills
+# Skills
 
 Personal skills for AI coding agents. It supports Claude Code, Cursor and the Codex app.
 

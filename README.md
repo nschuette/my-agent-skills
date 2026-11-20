@@ -1,4 +1,4 @@
-# my-agent-skills
+# Skills
 
 Personal skills for AI coding agents. It supports Claude Code, Cursor and the Codex app.
 
@@ -16,10 +16,10 @@ Requirements: git and at least one of Claude Code, Cursor or the Codex app, on m
 
 ```bash
 # Get the repository
-git clone https://github.com/nschuette/my-agent-skills.git
+git clone https://github.com/nschuette/skills.git
 
 # Go to the repository folder
-cd my-agent-skills
+cd skills
 
 # Link the skills into ~/.claude/skills/ and ~/.agents/skills/
 ./install.sh
