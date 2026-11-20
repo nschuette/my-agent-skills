@@ -30,15 +30,6 @@ After a change in the repository, run `./install.sh` again.
 The script replaces only folders that it installed, and symlinks from older versions of the script.
 To use different target folders, set `CLAUDE_SKILLS_DIR` and `AGENTS_SKILLS_DIR`.
 
-To use a different [work root](#work-files), set `AGENTS_WORK_DIR`:
-
-```bash
-AGENTS_WORK_DIR="$HOME/my/work" ./install.sh
-```
-
-Then the script prints the settings for each agent with this path. Copy them into the files that the script names.
-The Cursor setting is not checked yet.
-
 Each agent reads these folders:
 
 - Claude Code: `~/.claude/skills/`.
@@ -56,7 +47,7 @@ Example: a plan for a Jira ticket.
    If a ticket tool such as a Jira MCP server is connected, the agent reads the ticket.
    If not, the agent asks you to paste the ticket text.
 3. Answer the questions of the agent and choose an approach.
-4. Approve the outline. The agent writes the plan to the plan folder. See [Work files](#work-files).
+4. Approve the outline. The agent writes the plan to `.agent-work/plans/<branch>/`. See [Work files](#work-files).
 5. Review the plan. Give feedback in the same session. The agent changes the plan file.
 6. Start a new session and say: `Implement <path of the plan>`.
    The agent implements one phase at a time. After each phase, it stops for your approval.
@@ -72,65 +63,40 @@ You can also describe the task in the conversation first. Then run `/create-plan
 
 ## Work files
 
-Skills write plans and research documents outside of the project repository:
+Skills write plans and research documents into the project:
 
 ```
-<work root>/<project>/<branch>/YYYY-MM-DD-<slug>.<type>.md
+<project root>/.agent-work/plans/<branch>/YYYY-MM-DD-<slug>.<type>.md
 ```
 
-The files stay out of git. All worktrees of a project use the same files.
+You can open the files in your editor next to the code.
+The skills never commit these files. The skill creates `.agent-work/.gitignore` with the line `*`, so git ignores the folder.
+Nothing changes in the repository. You need no global gitignore.
 
-The work root is `$AGENTS_WORK_DIR`. If the variable is not set, the work root is `~/agents/work`.
-The value must be an absolute path, because the agents do not expand `~` in settings files.
-
-To use a different work root, the variable must reach each agent. `install.sh` prints the settings for this. See [Install](#install).
+Do not run `git clean -fdx`, because it deletes ignored files and so your plans. Use `git clean -fdx -e .agent-work` instead.
 
 ## Recommended settings
 
-If you set `AGENTS_WORK_DIR`, replace each `agents/work` path in these settings with your work root.
-
 ### Claude Code
 
-Add this to `~/.claude/settings.json`. Replace `<you>` with your user name.
+Add this to `~/.claude/settings.json`:
 
 ```json
 {
   "permissions": {
-    "additionalDirectories": ["/Users/<you>/agents/work"],
-    "allow": ["Read(~/.claude/skills/**)", "Edit(~/agents/work/**)"],
+    "allow": ["Read(~/.claude/skills/**)"],
     "ask": ["Bash(git commit *)"]
   }
 }
 ```
 
-- `additionalDirectories`: the agent can read work files in each session.
-- `allow`: the agent can read the files of a skill and write work files without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
-  For an absolute path, start the rule with `//`, for example `Edit(//Users/<you>/my/work/**)`. Reason: Claude Code reads one `/` as relative to the settings file.
+- `allow`: the agent can read the files of a skill without a prompt. The `allowed-tools` of a skill are not sufficient, because they apply only in the first turn.
 - `ask`: optional. The agent asks before each commit.
-
-### Codex
-
-Add this to `~/.codex/config.toml`. Replace `<you>` with your user name.
-
-```toml
-[sandbox_workspace_write]
-writable_roots = ["/Users/<you>/agents/work"]
-```
-
-The sandbox blocks writes outside of the workspace.
-The entry applies in the sandbox mode `workspace-write`.
-Without the entry, Codex asks for approval for each write.
-
-### Cursor
-
-Not checked yet. Cursor can ask before each write to `~/agents/work`.
-No setting that prevents this is confirmed.
 
 ## Known limitations
 
 - Only Claude Code replaces `$ARGUMENTS`. The other agents take the task from the message.
-- Cloud agents are not supported. The skills and the work root are only on the local computer.
-- In Claude Code, the skill can write without a prompt only to `~/agents/work`. Reason: `allowed-tools` cannot read environment variables. For a different work root, add an `allow` rule in the settings.
+- Cloud agents are not supported. The skills are only on the local computer.
 - `install.sh` copies the skills and does not link them. Reason: Claude Code checks a `Read` rule against the real path of a file. A rule for `~/.claude/skills/` does not match a file in a symlinked folder. See [anthropics/claude-code#106433](https://github.com/anthropics/claude-code/issues/106433).
 
 ## Conventions

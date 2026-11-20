@@ -43,16 +43,19 @@ Do not apply the strict STE dictionary. Technical names, commands and paths are 
 
 ## Agent work files
 
-Skills write work files (plans, research documents) outside of the project repository:
+Skills write work files (plans, research documents, explanations) into the project, in the folder `.agent-work/`:
 
 ```
-<work root>/<project>/<branch>/YYYY-MM-DD-<slug>.<type>.md
+<project root>/.agent-work/
+  plans/<branch>/YYYY-MM-DD-<slug>.plan.md
+  plans/<branch>/YYYY-MM-DD-<slug>.research.md
+  explain/<slug>.explain.md
 ```
 
-- `<work root>`: `$AGENTS_WORK_DIR`. If the variable is not set, `~/agents/work`.
-- `<project>`: folder name of the main repository. This is also true in a worktree.
 - `<branch>`: current branch. Replace each `/` with `-`.
-- `<type>`: `plan` or `research`.
+- A skill never commits work files. Before a skill writes, it creates `.agent-work/.gitignore` with the single line `*`.
+  Reason: git then ignores the folder without a change in the repository. Claude Code does not let a skill write into `.git/`.
+- Do not use `.agents/`. Reason: Codex reads project skills from `.agents/skills/`.
 
 ## Commits
 

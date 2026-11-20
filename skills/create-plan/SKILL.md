@@ -1,14 +1,12 @@
 ---
 name: create-plan
-description: Writes a phased implementation plan with success criteria to <AGENTS_WORK_DIR or ~/agents/work>/<project>/<branch>/. Writes no code. Use only when the user runs /create-plan.
+description: Writes a phased implementation plan with success criteria to .agent-work/plans/<branch>/ in the project. Writes no code. Use only when the user runs /create-plan.
 disable-model-invocation: true
 argument-hint: "[task, ticket or file]"
 allowed-tools:
   - Bash(git branch --show-current)
   - Bash(git rev-parse *)
   - Bash(git symbolic-ref *)
-  - Bash(echo *)
-  - Edit(~/agents/work/**)
 ---
 
 # Create a plan
@@ -25,13 +23,12 @@ Do not change project code. Do not commit.
 1. Get the branch with `git branch --show-current`.
 2. If the output is empty (detached HEAD), stop. Tell the user to check out a branch.
 3. If the branch is `main`, `master` or the branch of `origin/HEAD`, stop. Tell the user to create a branch first. Reason: plans are stored for each branch.
-4. Get the project name. In a worktree, the current folder is not the main repository.
-   1. Run `git rev-parse --path-format=absolute --git-common-dir`. The output is the `.git` folder of the main repository.
-   2. The project name is the name of the folder that contains this `.git` folder.
+4. Get the project root with `git rev-parse --show-toplevel`.
 5. Replace each `/` in the branch name with `-`.
-6. Get the work root with `echo "${AGENTS_WORK_DIR:-$HOME/agents/work}"`.
-7. If the work root does not start with `/`, stop. Tell the user to set `AGENTS_WORK_DIR` to an absolute path. Reason: a settings file does not expand `~`.
-8. The plan folder is `<work root>/<project>/<branch>/`.
+6. The plan folder is `<project root>/.agent-work/plans/<branch>/`.
+7. If `<project root>/.agent-work/.gitignore` does not exist, create it with the single line `*`.
+   Reason: then git ignores the folder and never commits a work file. Nothing changes in the repository.
+8. Run each git command of this step on its own. Reason: the allowed tools match only single commands.
 
 ## Step 2: Collect context
 
