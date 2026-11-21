@@ -26,6 +26,7 @@ If there is no plan, stop. Tell the user to run `/create-plan` first.
 1. Get the branch with `git branch --show-current`.
 2. If the branch is `main`, `master` or the branch of `origin/HEAD`, stop. Reason: this skill commits, and commits belong on a feature branch.
 3. Read the plan fully.
+   If the skill `coding-principles` is available, load it. Follow its rules in each phase.
 4. Read the section "Progress". Start with the first phase that has open items. Reason: a new session continues where the last session stopped.
 5. Run `git status --short`. If there are changes that are not from this plan, stop and ask the user.
 6. If the user sets a level in the message, use it for the phases that the user names. Example: "all phases level 0".

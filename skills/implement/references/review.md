@@ -17,8 +17,11 @@ Check these points:
 4. Tests: the new tests check the behavior of the phase. A test that cannot fail does not count.
 5. Bypasses: if the phase adds a restriction, it applies on each path to the same data.
 6. Decisions: the code follows the section "Decisions".
+7. Principles: if the skill `coding-principles` is available, load it. The code follows its rules.
+   An exception in the section "Decisions" is not a finding.
 
 Report each finding in one line: `path:line`, the problem, and if the plan covers the fix.
+For a finding of point 7, name the rule.
 If there are no findings, write "No findings".
 Do not report style problems that lint or the formatter find.
 ````
