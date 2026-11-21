@@ -10,6 +10,7 @@ This is my personal setup. You can use it, but I do not give support.
 | --- | --- | --- |
 | `create-plan` | Checks the task against the code and writes a phased implementation plan. Writes no code. | `/create-plan <task>` (Claude Code, Cursor) or `$create-plan <task>` (Codex), only on request |
 | `implement` | Implements a plan phase by phase, with tests first, checks, a review and one commit for each phase. | `/implement <plan>` (Claude Code, Cursor) or `$implement <plan>` (Codex), only on request |
+| `learn` | Turns review feedback into a rule. Writes it to `coding-principles` or the project instructions, or proposes a lint rule or hook. | `/learn <feedback>` (Claude Code, Cursor) or `$learn <feedback>` (Codex), only on request |
 | `coding-principles` | Coding principles as if-then rules. Other skills read them when they plan, implement or review. | The agent loads it when it plans, writes or reviews code |
 
 ## Install
