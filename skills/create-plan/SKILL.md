@@ -40,6 +40,7 @@ Do not change project code. Do not commit.
 5. List the requirements of the task before you explore the code. Keep the words that set the scope, for example "always" or "for all users". Reason: the existing code must not change what the task requires.
 6. Find the commands for tests, lint and build. Look in `CLAUDE.md`, `AGENTS.md`, `README`, `Makefile`, `package.json` and `composer.json`. If you cannot find them, ask. Do not guess.
 7. Explore the code that the task touches. Find existing patterns that the change can follow. A pattern shows how to build the change. The task decides what the change does.
+8. If the skill `coding-principles` is available, load it. Use its rules for the design decisions of the plan.
 
 ## Step 3: Check the task
 
@@ -63,6 +64,7 @@ If there is more than one sensible approach, show 2 or 3 options:
 
 - For each option: the approach, the advantages and the risks.
 - If two options meet all requirements, prefer the option that follows the existing patterns.
+- If an option breaks a rule of `coding-principles`, name the rule in its risks.
 - Recommend one option and give the reason.
 
 Then stop and wait for the decision.
@@ -115,7 +117,9 @@ Read the plan again and check these points. Fix each problem in the plan.
    If a phase changes behavior, its first change adds a test for this behavior.
 7. Levels: each phase has a level and a reason. Each level follows `references/autonomy-levels.md`.
 8. Review focus: each phase names what only a human can judge. Do not list what tests or lint check.
-9. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
+9. Principles: the plan follows the rules of `coding-principles`.
+   If the plan breaks a rule on purpose, add the rule and the reason to the section "Decisions".
+10. Size: the plan is shorter than the code that it describes. Replace function bodies with signatures and test names.
    The part before the first phase has 40 lines or fewer. Reason: the user reads this part to approve the plan.
    Each phase has 7 changes or fewer. If a phase has more, merge related changes or split the phase.
 
