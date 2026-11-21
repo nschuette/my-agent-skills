@@ -69,6 +69,9 @@ Use Conventional Commits in English.
 - Summary: 50 characters or fewer, lowercase, imperative, no period at the end.
 - Body: optional. Use bullet points that tell what changed and why.
 - Do not add attribution lines such as `Co-Authored-By`.
+- Before each commit, read the added lines with `git diff --cached`.
+- Check each added line against the writing rules. If a line breaks a rule, correct it first.
+  Reason: reviews found the passive voice, a condition after the instruction and synonyms in new text.
 
 ## Test a skill
 
